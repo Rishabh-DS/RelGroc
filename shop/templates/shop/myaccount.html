@@ -1,0 +1,326 @@
+{% extends "shop/basic.html" %}
+
+{% block css %}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Poppins',sans-serif;
+}
+body{
+height: 100vh;
+justify-content: center;
+align-items: center;
+background: #475d62;
+}
+.container{
+max-width: 700px;
+width: 100%;
+background-color: #fff;
+padding: 25px 30px;
+border-radius: 5px;
+box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+.container .title{
+font-size: 25px;
+font-weight: 500;
+position: relative;
+}
+.container .title::before{
+content: "";
+position: absolute;
+left: 0;
+bottom: 0;
+height: 3px;
+width: 30px;
+border-radius: 5px;
+background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.content form .user-details{
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+margin: 20px 0 12px 0;
+}
+form .user-details .input-box{
+margin-bottom: 15px;
+width: calc(100% / 2 - 20px);
+}
+form .input-box span.details{
+display: block;
+font-weight: 500;
+margin-bottom: 5px;
+}
+.user-details .input-box input{
+height: 45px;
+width: 100%;
+outline: none;
+font-size: 16px;
+border-radius: 5px;
+padding-left: 15px;
+border: 1px solid #ccc;
+border-bottom-width: 2px;
+transition: all 0.3s ease;
+}
+
+.user-details .input-box .noedit{
+height: 45px;
+width: 100%;
+outline: none;
+font-size: 16px;
+border-radius: 5px;
+padding-left: 15px;
+border: 1px solid #ccc;
+border-bottom-width: 2px;
+transition: all 0.3s ease;
+}
+
+.user-details .input-box input:focus,
+.user-details .input-box input:valid{
+border-color: #9b59b6;
+}
+
+
+
+form .category{
+display: flex;
+width: 80%;
+margin: 14px 0 ;
+justify-content: space-between;
+}
+form .category label{
+display: flex;
+align-items: center;
+cursor: pointer;
+}
+form .category label .dot{
+height: 18px;
+width: 18px;
+border-radius: 50%;
+margin-right: 10px;
+background: #d9d9d9;
+border: 5px solid transparent;
+transition: all 0.3s ease;
+}
+
+
+
+form .button{
+height: 45px;
+margin: 35px 0
+}
+form .button input{
+height: 100%;
+width: 100%;
+border-radius: 5px;
+border: none;
+color: #fff;
+font-size: 18px;
+font-weight: 500;
+letter-spacing: 1px;
+cursor: pointer;
+transition: all 0.3s ease;
+background: #214a80;
+}
+form .button input:hover{
+/* transform: scale(0.99); */
+background: #00004d;
+}
+@media(max-width: 584px){
+.container{
+max-width: 100%;
+}
+form .user-details .input-box{
+margin-bottom: 15px;
+width: 100%;
+}
+form .category{
+width: 100%;
+}
+.content form .user-details{
+max-height: 300px;
+overflow-y: scroll;
+}
+.user-details::-webkit-scrollbar{
+width: 5px;
+}
+}
+@media(max-width: 459px){
+.container .content .category{
+flex-direction: column;
+}
+}
+
+{% endblock css %}
+
+
+{% block body %}
+{% load static %}
+<div class="container my-4">
+    <div class="title">Your account details:</div>
+    <div class="content">
+        <form action="/myaccount/" method="POST">
+            {% csrf_token %}
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details">Username</span>
+                    <input type="text" id="username" name="username" value="{{profile.user.username}}" placeholder="Username"
+                        required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Email</span>
+                    <input type="email" id="email" name="email" value="{{profile.user.email}}" placeholder="xyz@abc.com">
+                </div>
+                <div class="input-box">
+                    <span class="details">First Name</span>
+                    <input type="text" id="fname" name="fname" value="{{profile.user.first_name}}" placeholder="First Name" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Last Name</span>
+                    <input type="text" id="lname" name="lname" value="{{profile.user.last_name}}" placeholder="Last Name" required>
+                </div>
+
+                <div class="input-box">
+                    <span class="details">Phone Number</span>
+                    <div class="p-3 border noedit">{{profile.Phone}}</div>
+                </div>
+                <div class="input-box">
+                    <span class="details">Address1</span>
+                    <input type="text" id="address1" name="address1" value="{{profile.address1}}" placeholder="Address1"
+                        required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Address2</span>
+                    <input type="text" id="address2" name="address2" value="{{profile.address2}}" placeholder="House no. xyz, near...">
+                </div>
+                <div class="input-box">
+                    <span class="details">State</span>
+                    <input type="text" id="state" name="state" value="{{profile.state}}" placeholder="State" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">City</span>
+                    <input type="text" id="city" name="city" value="{{profile.city}}" placeholder="City" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Pin Code</span>
+                    <input type="text" id="pin_code" name="pin_code" value="{{profile.pin_code}}" placeholder="pin_code"
+                        required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Reference Code (Optional)</span>
+                    <div class="p-3 border noedit">{{profile.code}}</div>
+                </div>
+                <div class="input-box">
+                    <span class="details">Recommended by</span>
+                    <div class="p-3 border noedit">{{profile.recommended_by}}</div>
+                </div>
+            </div>
+
+            <div class="button">
+                <input type="submit" value="Update">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block js %}
+  <script>
+    if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    }
+    updatePopover(cart)
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    {% comment %} function PlusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr' + a);
+        updateCart(cart);
+    } {% endcomment %}
+
+    function PlusCart(a) {
+      stock = cart['pr'+a][7];
+      if(cart['pr'+a][0]>=stock){
+        alert("No more items in stock");
+      }
+      else{
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+      }
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        updateCart(cart);
+
+    }
+    
+  </script>
+{% endblock js %}

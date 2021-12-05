@@ -1,0 +1,647 @@
+{% extends 'shop/basic.html' %}
+{% comment %}
+
+{% block title %}Search results{% endblock %}
+{% block css %}
+.col-md-3
+{
+display: inline-block;
+margin-left:-4px;
+}
+
+.carousel-indicators .active {
+background-color: blue;
+}
+
+.col-md-3 img{
+
+width: 100%;
+height: 130px;
+}
+
+body .carousel-indicator li{
+background-color: blue;
+}
+
+body .carousel-indicators{
+bottom: 0;
+}
+
+body .carousel-control-prev-icon,
+body .carousel-control-next-icon{
+background-color: blue;
+}
+
+.carousel-control-prev,
+.carousel-control-next{
+top: auto;
+bottom: auto;
+padding-top: 222px;
+}
+body .no-padding{
+padding-left: 0,
+padding-right: 0;
+}
+
+        
+}
+
+
+{% endblock %}
+{% block body %}
+{% load static %}
+<div class="container">
+    <!--Slideshow starts here -->
+    {% for product, range, nSlides in allprods %}
+    <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+    <div class="row">
+        <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+            <ul class="carousel-indicators">
+                <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+                {% for i in range %}
+                <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+                {% endfor %}
+            </ul>
+            <div class="container carousel-inner no-padding">
+                <div class="carousel-item active">
+                    {% for i in product %}
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card align-items-center" style="width: 13rem; height:19rem">
+                            <a href = "/products/{{i.id}}" class = "card-img"><img src='/media/{{i.images.image1}}' class="card-img-top" alt="..."> </a>
+                            <div class="card-body">
+                                <h5 class="card-title" id = "namepr{{i.id}}">{{i.product_name}}</h5>
+                                <p class="card-text">{{i.desc|slice:"0:20"}}...</p>
+                                <h6 class = "card-title">Rs. <span id = "pricepr{{i.id}}">{{i.price}}</span></h6>
+                                <span id="divpr{{i.id}}" class="divpr">
+                                    <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                </div>
+                <div class="carousel-item">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- left and right controls for the slide -->
+        <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+{% if msg|length != 0 %}
+// var str = '&#9785'
+// var res = str.fontsize(7)
+
+document.write('<br>')
+document.write('<br>')
+document.write('<br>')
+document.write('<br>')
+document.write('<p align="center" style="font-size:150px ">&#9785;</p>')
+document.write('<br>')
+document.write('<p align="center" style="font-size:40px"><b>No Search Found!</b></p>')
+document.write('<p align="center" style="font-size:20px"><b>Please make sure to enter relevent query</b></p>')
+// window.location.href = "/"
+
+{% endif %} 
+
+// Find out the cart items from localStorage
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    updateCart(cart);
+}
+// If the add to cart button is clicked, add/increment the item
+//$('.cart').click(function() {
+    $('.divpr').on('click','button.cart' , function(){
+    var idstr = this.id.toString();
+    if (cart[idstr] != undefined) {
+        qty = cart[idstr][0] + 1;
+    } else {
+        qty = 1;
+        name = document.getElementById('name'+idstr).innerHTML;
+        price = document.getElementById('price'+idstr).innerHTML;
+        cart[idstr] = [qty,name,parseInt(price)];
+    }
+    updateCart(cart);
+    
+});
+console.log(cart);
+//Add Popover to cart
+$('#popcart').popover();
+
+updatePopover(cart);
+function updatePopover(cart){
+    var popStr = "";
+    popStr = popStr+"<h5>Cart for your items in my shopping cart </h5> <div class = 'mx-2 my-2'>";
+    var i=1;
+    for(var item in cart){
+        popStr = popStr+ "<b>" + i + "</b>. ";
+        popStr = popStr+ document.getElementById("name" + item).innerHTML.slice(0,19) + "..." + " <b>Qty</b> : " + cart[item][0] + '<br>';
+        i=i+1;
+    }
+    
+    popStr = popStr+ "</div> <a href = '/shop/checkout'><button class = 'btn btn-primary' id = 'checkout'>Checkout</button></a> <button class = 'btn btn-primary' onclick = 'clearCart()' id = 'clearCart'>ClearCart</button>"
+    document.getElementById("popcart").setAttribute('data-content', popStr);
+    $('#popcart').popover('hide');
+
+}
+
+function clearCart(){
+    cart = JSON.parse(localStorage.getItem('cart'));
+    for(var item in cart){
+        document.getElementById('div'+item).innerHTML = '<button id="'+ item +'" class="btn btn-primary cart">Add To Cart</button>'
+    }
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
+}
+
+function updateCart(cart) {
+    var sum = 0;
+    for (var item in cart) {
+        sum = sum+cart[item][0];
+        document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item][0] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart').innerHTML = sum;
+    updatePopover(cart);
+}
+// If plus or minus button is clicked, change the cart as well as the display value
+$('.divpr').on("click", "button.minus", function() {
+    a = this.id.slice(7, );
+    console.log(this.id);
+    cart['pr' + a][0] = cart['pr' + a][0] - 1;
+    cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+    // document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+    if(cart['pr'+a][0] == 0){
+        document.getElementById('divpr'+a).innerHTML = '<button id="pr'+a+'" class="btn btn-primary cart">Add To Cart</button>';
+        delete cart['pr'+a];
+    }
+    else{
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+    }
+    updateCart(cart);
+});
+$('.divpr').on("click", "button.plus", function() {
+    a = this.id.slice(6, );
+    cart['pr' + a][0] = cart['pr' + a][0] + 1;
+    document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+    updateCart(cart);
+});
+</script>
+{% endblock %} {% endcomment %}
+
+
+
+{% block title %} Buy good quality{{category}} at vey low price{% endblock title %}
+
+{% block css %}
+
+body{
+height: 100vh;
+justify-content: center;
+align-items: center;
+background:lightgray;
+}
+
+.container{
+padding-left:40px;
+}
+
+
+
+.container .slider {
+height:515px;;
+overflow-y: scroll;
+background-color:lightgray;
+}
+
+.container .slider::-webkit-scrollbar{
+width:0;
+}
+
+.container .navigation li{
+color:gray;
+border-radius:0px;
+background-color:#f2f2f2;
+}
+
+.container .navigation a{
+text-decoration:none;
+}
+
+.container .vertical-line{
+display: inline-block;
+border-left: 1px solid lightgray;
+margin: 0 10px;
+height: 515px;
+}
+
+.container .right-container{
+width:100%;
+margin-top:20px;
+padding:10px;
+}
+
+.container .card{
+width: 16%;
+height:100%;
+}
+
+.container .card .card-body{
+width: 100%;
+}
+
+.container .card .card-title{
+font-size:12px;
+font-weight:bold;
+text-align:left;
+margin-bottom:0rem;
+}
+
+.container .card .card-name{
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+  text-align:left;
+  font-size:14px;
+  height:1.5rem;
+  width:105px;
+}
+
+.container .card .add-to-cart{
+text-align:center;
+width:100%;
+}
+
+
+.container .card .cart{
+width:100%;
+height:22px;
+font-size:12px;
+text-align:center;
+padding:revert;
+font-family:unset;
+}
+
+.container .card .minus {
+width:25px;
+height:22px;
+font-size:12px;
+text-align:center;
+padding:revert;
+font-family:unset;
+margin-right:19px;
+}
+.container .card .plus {
+width:25px;
+height:22px;
+font-size:12px;
+text-align:center;
+padding:revert;
+font-family:unset;
+margin-left:19px;
+}
+
+.container .header{
+font-family: 'Roboto Condensed', sans-serif;
+font-size:30px;
+font-wight:bold;
+}
+
+div.scrollmenu {
+background-color: #6c7178;
+overflow: auto;
+white-space: nowrap;
+}
+
+div.scrollmenu a {
+display: inline-block;
+color: white;
+text-align: center;
+padding: 14px;
+text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+background-color: #777;
+}
+
+.container .right-container .inner-container .discount{
+position:absolute;
+top: -10px;
+left: 0px;
+}
+
+@media (max-width: 800px) {
+.container{
+padding:10px;
+}
+.container .card{
+width:50%;
+}
+.container .left-container{
+display:none;
+}
+.container .right-container{
+width:100%;
+}
+.container .vertical-line{
+display:none;
+}
+}
+{% endblock css %}
+
+{% block body %}
+{% load static %}
+{% if msg %}
+    <div class = "container">
+        <br><br><br><br>
+        <p align="center" style="font-size:150px ">&#9785;</p>
+        <br>
+        <p align="center" style="font-size:40px"><b>No Search Found!</b></p>
+        <p align="center" style="font-size:20px"><b>Please make sure to enter relevent query</b></p>
+    </div>
+    {% else %}
+    <div class="container">
+        <div class="scrollmenu">
+            {% for cat in categories %}
+            <a href="/category/{{cat}}">{{cat}}</a>
+            {% endfor %}
+        </div>
+        {% comment %} <div class="left-container">
+            <div class="slider" id="slider">
+                <div class="navigation my-4">
+                    <ul class="list-group ">
+                        <li class="list-group-item" style="border-radius:10px 10px 0px 0px; color:black;">Other categories
+                        </li>
+                        {% for cat in categories %}
+                        <a href="/category/{{cat}}">
+                            <li class="list-group-item">{{cat}}</li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <div class='inner-container' style='display:flex;'>
+            <span class="vertical-line"></span>
+            <div class="right-container">
+                <div class="inner-container">
+                    <div class="row">
+                        {% for item in allprods %}
+                        <div class="card align-items-left" style="padding:0">
+                            <!-- {% comment  %} <span class="mr-auto badge rounded-pill bg-success">51% OFF</span> {% endcomment %} -->
+                            <div class="card-img">
+                                <a href="/products/{{item.id}}">
+                                    <div id="imagepr{{item.id}}"><img src='/media/{{item.images.image1}}'
+                                            class="card-img-top" style="width:100%;height:80px;"
+                                            alt="{{item.product_name}}"></div>
+                                </a>
+                                {% if item.discount %}
+                                <div class="discount"><span class="mr-auto badge rounded-pill bg-success">{{item.discount}}%
+                                        OFF</span></div>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                {% comment %} <div class="card-title">₹<span id="pricepr{{item.id}}">{{item.price}}</span>
+                                </div> {% endcomment %}
+                                {% if item.discount %}
+                                <div class="card-title">₹<span id="max_price{{item.id}}"
+                                        style="font-weight:normal;"><del>{{item.max_retail_price}}</del></span> ₹<span
+                                        id="pricepr{{item.id}}">{{item.price}}</span></div>
+                                {% else %}
+                                <div class="card-title">₹<span id="pricepr{{item.id}}">{{item.max_retail_price}}</span>
+                                </div>
+                                {% endif %}
+                                <div class="card-name mb-2" id="namepr{{item.id}}">{{item.product_name}}</div>
+                                <div class="product-size mb-2" id="sizepr{{item.id}}">{{item.size}}</div>
+                                <div class = "stock d-none" id = "stockpr{{item.id}}">{{item.in_stock}}</div>
+                                <div class = "category d-none" id = "categorypr{{item.id}}">{{item.category}}</div>
+                                <div class="add-to-cart">
+                                    <span id="divpr{{item.id}}" class="divpr">
+                                        <button id="pr{{item.id}}" class="btn btn-primary cart">ADD</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+{% endblock body %}
+
+{% block js %}
+
+<script>
+
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    }
+    else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updateCart(cart);
+    }
+
+
+    //$('.cart').click(function() {
+    $('.divpr').on('click', 'button.cart', function () {
+        var idstr = this.id.toString();
+        var stock = document.getElementById('stock'+idstr).innerHTML;
+        if(stock==0){
+            alert("Item is out of stock");
+        }
+        else{
+            if (cart[idstr] != undefined) {
+                qty = cart[idstr][0] + 1;
+            } else {
+                qty = 1;
+                name = document.getElementById('name' + idstr).innerHTML;
+                price = document.getElementById('price' + idstr).innerHTML;
+                img = document.getElementById('image' + idstr).innerHTML;
+                size = document.getElementById('size' + idstr).innerHTML;
+                category = document.getElementById('category'+idstr).innerHTML;
+                cart[idstr] = [qty, name, parseInt(price), idstr.slice(2), img, size , category , stock];
+            }
+            updateCart(cart, idstr);   // Calling the function
+        }
+    });
+
+
+    updatePopover(cart);
+    {% comment %} function updatePopover(cart) {
+        console.log('We are inside updatePopover');
+        var popStr = "";
+        popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+        var i = 1;
+        for (var item in cart) {
+            popStr = popStr + "<b>" + i + "</b>. ";
+            popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item][0] + '<br>';
+            i = i + 1;
+        }
+        popStr = popStr + "</div> <a href='/checkout'><button class='btn btn-primary' id ='checkout'>Checkout</button></a> <button class='btn btn-primary' onclick='clearCart()' id ='clearCart'>Clear Cart</button>     "
+        console.log(popStr);
+        document.getElementById('popcart').setAttribute('data-content', popStr);
+        $('#popcart').popover('hide');
+    } {% endcomment %}
+
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    {% comment %} function clearCart() {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        for (var item in cart) {
+            document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+        }
+        localStorage.clear();
+        cart = {};
+        updateCart(cart);
+    } {% endcomment %}
+
+
+    for (var item in cart) {
+        var cartbtn = document.getElementById('divpr' + cart[item][3])
+        if (cartbtn != null) {
+            updateCart(cart, item);
+        }
+        else {
+            updateCart(cart);
+        }
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    $('.divpr').on("click", "button.minus", function () {
+        a = this.id.slice(7,);
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+
+        if (cart['pr' + a][0] == 0) {
+            document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+        updateCart(cart, 'pr' + a);
+    });
+    $('.divpr').on("click", "button.plus", function () {
+        a = this.id.slice(6,);
+        var stock = cart['pr'+a][7];
+        if(cart['pr'+a][0]>=stock){
+            alert("No more items in the stock");
+        }
+        else{
+            cart['pr' + a][0] = cart['pr' + a][0] + 1;
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+            updateCart(cart, 'pr' + a);
+        }
+    });
+
+    function PlusCart(a) {
+        var stock = cart['pr'+a][7];
+        if(cart['pr'+a][0]>=stock){
+            alert("No more items in the stock");
+        }
+        else{
+            cart['pr' + a][0] = cart['pr' + a][0] + 1;
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+            var cartbtn = document.getElementById('divpr' + a);
+            if (cartbtn != null) {
+                updateCart(cart, 'pr' + a);
+            }
+            else {
+                updateCart(cart);
+            }
+        }
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        if (cartbtn != null) {
+            updateCart(cart, 'pr' + a);
+        }
+        else {
+            updateCart(cart);
+        }
+
+    }
+
+
+</script>
+
+{% endblock js %}

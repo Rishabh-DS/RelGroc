@@ -1,0 +1,236 @@
+{% extends 'shop/basic.html' %}
+{% block title %}Payment Status{% endblock %}
+
+
+{% block css %}
+
+    body {
+        text-align: center;
+        background: #EBF0F5;
+      }
+
+      .right-container{
+          padding-top:40px;
+      }
+        h1 {
+          color: #88B04B;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-weight: 900;
+          font-size: 40px;
+          margin-bottom: 10px;
+        }
+        p {
+          color: #404F5E;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-size:20px;
+          margin: 0;
+        }
+      .checkmark {
+        color: #9ABC66;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+      }
+      .bi-emoji-frown{
+        color: red;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 3px #C8D0D8;
+        display: inline-block;
+        margin-top:20px;
+      }
+
+      .horizontal-line{
+        width: 100%; 
+        display:inline-block;
+        text-align: center; 
+        border-bottom: 1px solid #888; 
+        line-height: 0.1em;
+        margin: 5px 0 20px; 
+    }
+
+      .data{
+          display:flex;
+          justify-content: flex-start
+      }
+      .data .key{
+          font-weight:bold;
+      }
+      
+
+{% endblock css %}
+
+
+{% block body %}
+    {% load static %}
+    <div class = "container" style = "display:flex;">
+        <div class = "left-container col-md-6">
+            <div class="card">
+                {% if order %}
+                    <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+                    <i class="checkmark">✓</i>
+                    </div>
+                    <h1>Success</h1> 
+                    <p>We received your purchase request;<br/> we'll be in touch shortly!</p>
+                {% else %}
+                    <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+                    <i class="bi bi-emoji-frown"></i>
+                </div>
+                    <h1 style = "color:red;">Failure</h1> 
+                    <p>Order was not successful because<br/> {{response.RESPMSG}}</p>
+                {% endif %}
+                
+                    <a href = "/" class = "btn btn-success mt-2">Go to Home</a>
+            </div>
+        </div>
+        <div class = "right-container col-md-6">
+            <div class = "card">
+                <div class="heading" style = "font-weight: bold;">Your payment details:</div>
+                <div class="horizontal-line"></div>
+                <div class="data-container">
+                    <div class="data">
+                        <div class="key">Order id: </div><hr>
+                        <div class="value">{{response.ORDERID}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Amount: </div><hr>
+                        <div class="value">₹{{response.TXNAMOUNT}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Payment mode: </div><hr>
+                        <div class="value">{{response.PAYMENTMODE}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Date: </div><hr>
+                        <div class="value">{{response.TXNDATE}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Gateway name: </div><hr>
+                        <div class="value">{{response.GATEWAYNAME}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Bank name: </div><hr>
+                        <div class="value">{{response.BANKNAME}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Response: </div><hr>
+                        <div class="value">{{response.RESPMSG}}</div>
+                    </div>
+                    <div class="data">
+                        <div class="key">Currency: </div><hr>
+                        <div class="value">{{response.CURRENCY}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% comment %} {% block js %}
+    <script>
+    {% if order %}
+        localStorage.clear()
+    {% endif %}
+
+    </script>
+{% endblock %}  {% endcomment %}
+
+{% block js %}
+  <script>
+
+    {% if order %}
+        localStorage.clear()
+    {% endif %}
+
+    if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    }
+    updatePopover(cart)
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    function PlusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr' + a);
+        updateCart(cart);
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        updateCart(cart);
+
+    }
+    
+  </script>
+{% endblock js %}
+

@@ -1,0 +1,407 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}
+My Orders
+{% endblock title %}
+
+{% block css %}
+
+    body{
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background: #475d62;
+    }
+    .container{
+        display:flex;
+    }
+    .inner-container{
+        font-family: 'Roboto Condensed', sans-serif;
+        display:flex;
+        padding:40px;
+        width:100%;
+    }
+
+    .container .left-container .heading{
+         font-size:17px;
+         border:1px solid black;
+         width:100%;
+         padding : 5px;
+         border-radius:5px 5px 0px 0px;
+         background-color:#e1e5ed;
+    }
+
+
+
+
+    .container .left-container .orders_list{
+         border:1px solid black;
+         width:100%;
+         padding-top : 5px;
+         padding-bottom : 5px;
+         padding-left : 20px;
+         padding-right : 20px;
+         border-radius:0px 0px 5px 5px;
+         background-color:#edf1f7;
+    }
+
+
+    .container .left-container .desc{
+         display:flex;
+         width:100%;
+         align-content: center;
+    }
+
+
+    .container .left-container{
+        padding:20px;
+        width:100%;
+    }
+
+
+    .container .left-container .lower .address{
+        padding-left:20px;
+        padding-right:20px;
+        border:1px solid black;
+        border-radius:0px 0px 5px 5px;
+        background-color:#edf1f7;
+    }
+
+
+    .container .left-container .lower a{
+         font-size:17px;
+         border:1px solid black;
+         width:100%;
+         padding : 5px;
+         border-radius:5px 5px 0px 0px;
+         background-color:#e1e5ed;
+    }
+
+
+    .container .left-container .lower .address1{
+        padding-left:20px;
+        padding-right:20px;
+        display: flex;
+    }
+
+    
+    .container .left-container .lower .address2{
+        padding-left:20px;
+        padding-right:20px;
+        display: flex;
+    }
+
+
+    .container .left-container .lower .address .address-vertical-line{
+        display: inline-block;
+        border-left: 1px solid #ccc;
+        margin: 10px 10px 10px;
+        height: 40px;
+    }
+
+    .container .right-container{
+         width:100%;
+         padding-top:70px;
+    }
+
+
+    .container .right-container .billing-details{
+         border:1px solid #7a7d82;
+         padding:15px;
+         border-radius:10px;
+         background-color:#e1e5ed;
+    }
+
+
+    .container .horizontal-line{
+        width: 100%; 
+        display:inline-block;
+        text-align: center; 
+        border-bottom: 1px solid #888; 
+        line-height: 0.1em;
+        margin: 5px 0 5px; 
+    }
+
+
+    .container .right-container .billing-details .subtotal{
+        padding:7px;
+        display:flex;
+        justify-content: space-between;
+    }
+    .container .right-container .billing-details .delivery{
+        padding:7px;
+        display:flex;
+        justify-content: space-between;
+    }
+    .container .right-container .billing-details .totalamount{
+        padding:7px;
+        display:flex;
+        justify-content: space-between;
+    }
+
+    .vertical-line{
+        display: inline-block;
+        border-left: 1px solid #ccc;
+        margin: 0 10px;
+        height: 515px;
+    }
+
+    @media (max-width: 800px) {
+        .inner-container {
+            flex-direction: column;
+        }
+    }
+
+
+    @media only screen and (max-width: 600px){
+        .container .right-container{
+            padding-top:0px;
+        }
+        .container .vertical-line{
+            display:none;
+        }
+        
+        .container .left-container .desc .price{
+            display:none;
+        }
+
+        .container .left-container .desc .amount{
+            left:20%;
+            padding-top:10px;
+            font-size:12px;
+        }
+        
+        .container .left-container .desc .name{
+            width:100%;
+            border-radius:5px;
+        }
+        .container .left-container .desc .name #name{
+            font-size:15px;
+        }
+        .container .left-container .desc .name #quan{
+            font-size:10px;
+        }
+    }
+
+{% endblock css %}
+
+{% block body %}
+{% load static %}
+<div class = "container">
+    <span class="vertical-line"></span>
+    <div class = "inner-container">
+        <div class = "left-container col-sm-8">
+            <a style = "color:white;" href = "/myorders/"> < Back </a>
+            <div class = "upper mb-4">
+                <div class = "heading mt-4">
+                    <div style = "font-weight:600;color:#333;">{{user.username}}</div>
+                    <div style = "font-size:12px;color:#888;">Order Id: {{orders.order_id}} <b>.</b> {{orders.items_count}} items</div>
+                </div>
+                <div class = "orders_list">
+                    {% for item,product in mylist %}
+                        <div class = "desc">
+                                <div class = "name col-sm-6">
+                                    <span id = "name"style = "display:block;color:#202020;line-height: 2.0em;">{{item.1}}</span>
+                                    <span id = "quan" style = "display:block;color:#888;">{{product.no_of_items_in_a_pack}} x {{product.size}}</span>
+                                </div>
+                                <div class = "price row col sm-3">
+                                    <div class = "mr-1" id = "quantity{{forloop.counter}}">{{item.0}}</div> x <div class = "ml-1" id = "price{{forloop.counter}}">₹{{item.2}}</div>
+                                </div>
+                                <div class = "amount col-sm-3">
+                                    ₹<span id = "amount{{forloop.counter}}"></span>
+                                </div>
+                            </div>
+                            <span class = "horizontal-line"></span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class = "lower mb-4">
+                {% comment %} <div class = "heading">
+                    <div style = "font-weight:600;color:#333;">Address details</div>   
+                </div> {% endcomment %}
+                <a class = "btn" data-toggle = "collapse" href = "#mydiv">Address details <b><i class="bi bi-chevron-down"></i></b></a>
+                <div class = "collapse" id = "mydiv">
+                    <div class = "address">
+                        <div class = "address1">
+                            <span style="padding-top:20px;">Address1</span>
+                            <span class = "address-vertical-line"></span>
+                            <span style="padding-top:20px;">{{orders.address1}}</span>
+                        </div>
+                        <span class = "horizontal-line"></span>
+                        <div class = "address2">
+                            <span style="padding-top:10px;">Address2</span>
+                            <span class = "address-vertical-line"></span>
+                            <span style="padding-top:10px;">{{orders.address2}}</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class = "right-container col-sm-4">
+
+            <div class = "billing-details">
+                
+                <div class = "subtotal">
+                    <span>
+                        <span>Subtotal</span>
+                    </span>
+                    <span>₹<span class="float-right" id = "subtotal1">{{orders.amount}}</span></span>
+                    
+                </div>
+                <div class = "delivery">
+                    <span>
+                        <span>Delivery Charges</span>
+                    </span>
+                    <span>₹<span class="float-right" id = "delivery-charges">{{orders.delivery_charges}}</span></span>
+                </div> 
+                <span class = "horizontal-line"></span>
+                <div class = "totalamount">
+                    <span>
+                        <span>Total Amount</span>
+                    </span>
+                    <span class="float-right">₹<span id = "totalamount"></span></span>
+                </div> 
+            </div>
+        </div>
+    </div>
+    <span class="vertical-line"></span>
+</div>
+
+{% endblock body %}
+
+{% comment %} {% block js %}
+<script>
+var len = {{length}};
+for(i=1;i<=len;i++){
+    var qty = document.getElementById('quantity'+i).innerHTML;
+    var price = document.getElementById('price'+i).innerHTML.slice(1);
+    var total = qty*price;
+    document.getElementById('amount'+i).innerHTML = total;
+}
+
+var subtotal = document.getElementById('subtotal1').innerHTML;
+var delivery_charges = document.getElementById('delivery-charges').innerHTML;
+console.log(delivery_charges);
+console.log(subtotal);
+var totalamount = parseInt(subtotal)+parseInt(delivery_charges);
+document.getElementById('totalamount').innerHTML = totalamount;
+</script>
+{% endblock js %} {% endcomment %}
+
+{% block js %}
+  <script>
+
+    var len = {{length}};
+    for(i=1;i<=len;i++){
+        var qty = document.getElementById('quantity'+i).innerHTML;
+        var price = document.getElementById('price'+i).innerHTML.slice(1);
+        var total = qty*price;
+        document.getElementById('amount'+i).innerHTML = total;
+    }
+
+    var subtotal = document.getElementById('subtotal1').innerHTML;
+    var delivery_charges = document.getElementById('delivery-charges').innerHTML;
+    console.log(delivery_charges);
+    console.log(subtotal);
+    var totalamount = parseInt(subtotal)+parseInt(delivery_charges);
+    document.getElementById('totalamount').innerHTML = totalamount;
+
+    if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    }
+    updatePopover(cart)
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    {% comment %} function PlusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr' + a);
+        updateCart(cart);
+    } {% endcomment %}
+
+    function PlusCart(a) {
+      stock = cart['pr'+a][7];
+      if(cart['pr'+a][0]>=stock){
+        alert("No more items in stock");
+      }
+      else{
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+      }
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        updateCart(cart);
+
+    }
+    
+  </script>
+{% endblock js %}
+

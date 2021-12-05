@@ -1,0 +1,390 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}
+My Recommendations
+{% endblock title %}
+
+{% block css %}
+
+body{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #475d62;
+}
+
+.container {
+    display:flex;
+    flex-direction:row;
+    padding-left:50px;
+    padding-right:50px;
+    padding-top:20px;
+}
+
+
+.container .inner-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+
+.container .reffral_code {
+    border:2px solid black;
+    border-radius:20px;
+    height:160px;
+    width:300px;
+    align-items:center;
+    text-align:center;
+    padding:10px;
+}
+
+.container .reffral_code .code-input{
+    border:2px solid black;
+    border-radius:20px;
+    text-align:center;
+}
+
+.container .reffral_code .btn{
+    font-size:15px;
+    border-radius:10px;
+}
+
+
+.container .recommendations{
+    border:2px solid black;
+    border-radius:20px;
+    height:267px;
+    width:300px;
+    text-align:center;
+    padding:10px;
+}
+
+.container .recommendations .slider{
+    height:200px;
+    overflow-y: scroll;
+    border-radius:20px;
+    background-color:lightgray;
+}
+
+.container .recommendations .slider li{
+    height:40px;
+}
+
+
+.container .recommendations .slider li:nth-child(odd){
+    background-color: lightgray;
+}
+
+.container .recommendations .bi{
+    font-weight:bold;
+    font-size:50px;
+}
+
+.container .coins{
+    border:2px solid black;
+    border-radius:20px;
+    height:461px;
+    width:300px;
+    text-align:center;
+    padding-top:20px;
+    padding-right:70px;
+    padding-left:70px;
+    padding-bottom:10px;
+}
+
+.container .coins .bi-cash-stack{
+    color:green;
+}
+
+
+.container .coins .bi-gift{
+    color:red;
+    font-size:50px;
+}
+
+
+.container .coins .money{
+    display:flex;
+    background-color:#f2f2f2;
+    margin-top:30px;
+    border-radius:10px;
+    padding-left:30px;
+    padding-top:5px;
+    padding-right:30px;
+}
+
+
+.container .coins .slider {
+    height:120px;
+    overflow-y: scroll;
+    border-radius:20px;
+    background-color:lightgray;
+}
+
+.container .coins .no-recommend{
+    display:flex;
+    height:100%;
+    background-color:#f2f2f2;
+    margin-top:30px;
+    border-radius:10px;
+    padding-left:100px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.container .coins .slider li{
+    height:40px;
+}
+
+
+.container .coins .slider li:nth-child(odd){
+    background-color: lightgray;
+}
+
+
+.container .coins .btn {
+  width: 100%;
+  border:1px solid black;
+  border-radius:30px;
+  background-color:#918da8;
+}
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+
+@media (max-width: 800px) {
+  .container .coins .no-recommend{
+    background-color:#f2f2f2;
+    border-radius:10px;
+    font-size:10px;
+    margin-top:10px;
+}
+}
+
+.container .coins .bi-emoji-frown-fill{
+    color:yellow;
+}
+
+
+
+{% endblock css %}
+
+{% block body %}
+{% load static %}
+<div class="container my-2">
+    <div class = "inner-container col-sm-5">
+        <div class = "reffral_code mt-2 mr-4" style = "background-color:lightgray">
+            <h5 class = "mt-3">Refferal</h5>
+            <input class = "code-input mx-2 my-4" type="text" value={{code}} id="code">
+            <span id="copytext">
+                <button class="btn btn-primary" id="copybutton" onclick="myFunction()"><i class="bi bi-clipboard"></i></button>
+            </span>
+        </div>
+        <div class = "recommendations mt-4 my-2 mr-4" style = "background-color:lightgray">
+            {% if my_recs %}
+            <h5>My Recommendations: </h5>
+            <div class="slider" id="slider">
+                <div class = "my-2">
+                    <ul class="list-group list-group-flush">
+                        {% for p in my_recs %}
+                        <li class="list-group-item">
+                            {{p.user}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+                <div class = "no-recommend1">
+                    <i class="bi bi-emoji-frown"></i><br>
+                    You didn't recommend anyone yet :(
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class = "coins mr-4 my-2 col-sm-7" style = "background-color:lightgray">
+        <div class = "mb-4">
+            <div class="position-relative"> <i class="bi bi-gift"></i></div>
+        
+            <h4>Invite & Earn</h4>
+            <h5>More you invite more you earn</h5>
+            <div class = "money">
+                <h5 class = "mr-auto"><i class="bi bi-cash-stack"></i><i class="bi bi-x"></i>{{cash}}</h5>
+                <h5 class = "ml-auto"><i class="bi bi-cash-stack"></i><i class="bi bi-x"></i>1 = ₹10</h5>
+            </div>
+        </div>
+        <a class = "btn" data-toggle = "collapse" href = "#mydiv">Your Success Partners</a>
+        {% comment %} <div class = "money" style = "text-align:center;">
+                <h5>Used cash: <i class="bi bi-cash-stack"></i><i class="bi bi-x"></i>{{used}}</h5>
+            </div> {% endcomment %}
+        <div class = "collapse" id = "mydiv">
+        {% if my_recs %}
+            <div class="slider" id="slider">
+                <div class = "my-2">
+                    <ul class="list-group list-group-flush">
+                        {% for p in ordered %}
+                        <li class="list-group-item">
+                            {{p}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <div class = "no-recommend">
+                Your recommendations didn't ordered yet :(
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+    
+
+
+</div>
+{% endblock body %}
+{% comment %} 
+{% block js %}
+<script>
+    function myFunction() {
+        /* Get the text field */
+        var copyText = document.getElementById("code");
+
+        console.log(copyText)
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);  /*For mobile devices */
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text 
+        alert("Copied the text: " + copyText.value);*/
+
+        document.getElementById('copytext').innerHTML = '<button class = "btn btn-success" ><i class="bi bi-clipboard"></button>'
+    }
+</script>
+{% endblock js %} {% endcomment %}
+
+{% block js %}
+  <script>
+    if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    }
+    updatePopover(cart)
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    {% comment %} function PlusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr' + a);
+        updateCart(cart);
+    } {% endcomment %}
+
+    function PlusCart(a) {
+      stock = cart['pr'+a][7];
+      if(cart['pr'+a][0]>=stock){
+        alert("No more items in stock");
+      }
+      else{
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+      }
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        updateCart(cart);
+
+    }
+
+    function myFunction() {
+        /* Get the text field */
+        var copyText = document.getElementById("code");
+
+        console.log(copyText)
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);  /*For mobile devices */
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text 
+        alert("Copied the text: " + copyText.value);*/
+
+        document.getElementById('copytext').innerHTML = '<button class = "btn btn-success" ><i class="bi bi-clipboard"></button>'
+    }
+    
+  </script>
+{% endblock js %}

@@ -1,0 +1,194 @@
+{% extends "shop/basic.html" %}
+
+{% block css %}
+
+body{
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+background: #475d62;
+}
+
+.container{
+	display: flex;
+	flex-flow: column;
+	height: 100%;
+	align-items: space-around;
+	justify-content: center;
+}
+
+.container form .userInput{
+	display: flex;
+	justify-content: center;
+}
+
+.container form .form-control{
+	margin: 10px;
+	height: 35px;
+	width: 200px;
+	border: none;
+	border-radius: 5px;
+	text-align: center;
+	font-family: arimo;
+	font-size: 1.2rem;
+	background: #eef2f3;
+
+}
+
+h1{
+	text-align: center;
+	font-family: arimo;
+	color: honeydew;
+}
+
+
+.container form .btn-primary {
+background: #214a80;
+border: none;
+border-radius: 4px;
+padding: 11px;
+box-shadow: none;
+margin-top: 26px;
+text-shadow: none;
+outline: none;
+}
+
+.container form .btn-primary:hover,
+.container form .btn-primary:active {
+background: #214a80;
+outline: none;
+}
+
+.container form .button{
+    text-align: center;
+}
+
+.container form .resend{
+    color:white;
+}
+{% endblock css %}
+
+{% block body %}
+{% load static %}
+	<div class="container">
+        {% if message %}
+        <div class="alert alert-{{class}}">
+            {{message}}
+        </div>
+        {% endif %}
+		<h1>Enter OTP sent to your number {{mobile}}</h1>
+        <form class="mt-2" action = "/otp/" method="post">
+        {% csrf_token %}
+            <div class="userInput">
+                <input type="text" placeholder="Enter otp" class="form-control" name="otp" id="">
+                {% comment %} <input type="text" class = "form-control" id='ist' maxlength="1" onkeyup="clickEvent(this,'sec')">
+                <input type="text" class = "form-control" id="sec" maxlength="1" onkeyup="clickEvent(this,'third')">
+                <input type="text" class = "form-control" id="third" maxlength="1" onkeyup="clickEvent(this,'fourth')">
+                <input type="text" class = "form-control" id="fourth" maxlength="1"> {% endcomment %}
+            </div>
+            <div class = "button">
+                <button class="btn btn-primary">Submit</button><br>
+                Don't recieve the code? <a href="{% url 'Resendotp' %}" class = "resend">resend otp</a>
+            </div>
+        </form>
+	</div>
+{% endblock %}
+
+{% block js %}
+  <script>
+    if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    }
+    updatePopover(cart)
+    function updatePopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<div class = 'mx-2 my-2'>";
+
+        if (localStorage.getItem('cart') != "{}") {
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+                popStr = popStr + "<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>" + cart[item][4] + "</div>";
+                popStr = popStr + "<div class = 'name' style = 'width:75%; text-align:left;'>" + "<span id = 'h" + i + "'>" + cart[item][1].slice(0, 19) + "</span>";
+                popStr = popStr + "<div class = 'size' style = 'font-size:12px;color:#5d6063;'>" + cart[item][5] + "</div>"
+                popStr = popStr + "<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty" + item + "'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart(" + cart[item][3] + ")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty" + i + "'>" + cart[item][0] + "</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart(" + cart[item][3] + ")'> + </button>" + "</div>" + "</div></div></div>";
+                i = i + 1;
+            }
+            popStr += "</div>";
+        }
+        else {
+            popStr += "<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+            popStr += "<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+        }
+
+        document.getElementById('items').innerHTML = popStr;
+    }
+
+    function updateCart(cart, id) {
+        var sum = 0;
+        var subtotal = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2] * cart[item][0];
+            subtotal += price
+        }
+        if (cart[id] != undefined) {
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        document.getElementById('qty').innerHTML = sum;
+        document.getElementById('subtotal').innerHTML = subtotal;
+        var delivery_charges = 0;
+        if (subtotal < 800 && subtotal > 0) {
+            delivery_charges = 49;
+        }
+        document.getElementById('delivery').innerHTML = delivery_charges;
+        document.getElementById('totalprice').innerHTML = subtotal + delivery_charges;
+        updatePopover(cart);
+    }
+
+    {% comment %} function PlusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr' + a);
+        updateCart(cart);
+    } {% endcomment %}
+
+    function PlusCart(a) {
+      stock = cart['pr'+a][7];
+      if(cart['pr'+a][0]>=stock){
+        alert("No more items in stock");
+      }
+      else{
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+      }
+    }
+
+    function MinusCart(a) {
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        var cartbtn = document.getElementById('divpr' + a);
+        if (cart['pr' + a][0] == 0) {
+            if (cartbtn != null) {
+                document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+            }
+            delete (cart['pr' + a])
+        }
+        else {
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        }
+
+        updateCart(cart);
+
+    }
+    
+  </script>
+{% endblock js %}

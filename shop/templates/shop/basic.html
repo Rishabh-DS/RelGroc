@@ -1,0 +1,541 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+  <!-- Bootstrap Awesome Icon CSS-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+
+  <!-- Font Cdn-->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto+Mono:wght@200&display=swap"
+    rel="stylesheet">
+
+  <!-- Autocomplete css -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  
+
+  <title>{% block title%} {% endblock %}</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  <style>
+
+  .image-name{
+    padding:5px;
+    border-bottom:1px solid #a5abb5;
+  }
+
+  .image{
+    padding:10px 4px 4px 4px;
+    border-radius:0px;
+  }
+
+  .name{
+    padding:5px 10px 10px 10px;
+  }
+
+  .opencart {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      right: 0;
+      background-color: lightgray;
+      overflow-x: hidden;
+      transition: 0.5s;
+      margin-top:60px;
+    }
+
+  .opencart .heading{
+    display:flex;
+    align-items:center;
+    padding:0px 20px 0px 10px;
+    background-color:darkslategray;
+    color:white;
+  }
+
+
+    img.card-img-top{
+      height:50px;
+      width:100%;
+      border-radius:0px;
+    }
+
+    button.cart-minus{
+      width:22px;
+      height:22px;
+      font-size:12px;
+      text-align:center;
+      padding:revert;
+      font-family:unset;
+      border-radius:50%;
+    }
+    button.cart-plus{
+      width:22px;
+      height:22px;
+      font-size:12px;
+      text-align:center;
+      padding:revert;
+      font-family:unset;
+      border-radius:50%;
+    }
+
+    .opencart .slider {
+      height:350px;;
+      overflow-y: scroll;
+      background-color:lightgray;
+    } 
+
+
+    .opencart a {
+      padding: 8px 8px 8px 8px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+
+    {% comment %} button#checkout{
+      width:100%;
+      height:30px;
+      font-size:14px;
+      text-align:center;
+      padding:revert;
+      font-family:unset;
+      text-align:left;
+    } {% endcomment %}
+
+    .opencart a:hover {
+      color: #f1f1f1;
+    }
+
+    .opencart .closebtn {
+      {% comment %} position: absolute; {% endcomment %}
+      {% comment %} top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px; {% endcomment %}
+    }
+
+    .opencart .billing .subtotal{
+      display:flex;
+      justify-content:space-between;
+      padding:2px 20px 2px 10px;
+    }
+
+    .opencart .billing .delivery {
+      display:flex;
+      justify-content:space-between;
+      padding:2px 20px 2px 10px;
+    }
+
+    .emptycart {
+      display: block;
+      margin-top:50px;
+      margin-left:auto;
+      margin-right:auto;
+      height:120px;
+      width:120px;
+    }
+    .emptycarttext {
+      margin:10px 20px 10px 20px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .opencart {padding-top: 15px;}
+      .opencart a {font-size: 18px;}
+    }
+
+
+
+    footer {
+      padding: 3px;
+      background-color: DarkSalmon;
+      color: white;
+      margin-top: 20px;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+
+    }
+
+    .dropdown-menu .dropdown-item:hover{
+        background-color: lightgray;
+    }
+
+    @media only screen and (max-width: 600px){
+      .dropdown-menu{
+          background-color:#343a40;
+          border:none;
+          margin-bottom: 10px;
+          margin-left: 10px;
+          margin-right: 10px;
+      }
+      .dropdown-menu .dropdown-item{
+          color:white;
+      }
+      .dropdown-menu .dropdown-item:hover{
+          color:black;
+      }
+
+      .form-control {
+          display: block;
+          width: 80%;
+          height: calc(2.25rem + 2px);
+          padding: .375rem .75rem;
+          font-size: 1rem;
+          font-weight: 400;
+          line-height: 1.5;
+          color: #495057;
+          background-color: #fff;
+          background-clip: padding-box;
+          border: 1px solid #ced4da;
+          border-radius: .25rem;
+          transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+      }
+
+
+    }
+
+
+      {% block css %}
+
+      {% endblock css %}
+  </style>
+</head>
+
+<body>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <a class="navbar-brand" href="/">MAC</a>
+    
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item active">
+          <a class="nav-link" href="/"><i class="bi bi-house-door-fill"></i> Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about"><i class="bi bi-file-earmark-person"></i> About Us</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/tracker"><i class="bi bi-binoculars"></i> Tracker</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/contact"><i class="bi bi-person-lines-fill"></i> Contact Us</a>
+        </li>
+
+
+        {% if user.is_authenticated %}
+
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Welcome {{request.user}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <l1><a class="dropdown-item" href="/recommendedprofiles"><i class="bi bi-award"></i> Refer and earn</a>
+              </l1>
+              <l1><a class="dropdown-item" href="/myorders"><i class="bi bi-card-list"></i> My Orders</a>
+              </l1>
+              <l1><a class="dropdown-item" href="/myaccount"><i class="bi bi-file-earmark-person"></i> My Account</a>
+              </l1>
+              <l1><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+              </l1>
+
+            </div>
+          </li>
+        </ul>
+
+        {% else %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">SignUp</a>
+        </li>
+        {% endif %}
+
+        {% comment %} <button type="button" class="btn btn-secondary mx-2" id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true"> <i class="bi bi-cart3"></i><span id="cart">0</span>
+        </button> {% endcomment %}
+      </ul>
+        
+    </div>
+    <form method='get' action='/search/' class="form-inline my-2 my-lg-0 mx-2">
+      <input class="form-control mr-sm-0" type="search" placeholder="Search" aria-label="Search" name="search"
+        id="search">
+      <span class="input-group-btn">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="bi bi-search"></i></button>
+      </span>
+    </form>
+        <div style = "border-left:1px solid #dfe3e8;padding-left:10px;" id = "popcart">
+          <span style="cursor:pointer;color:white;" onclick="openNav()"><span style = "font-size:30px;"><i class="bi bi-cart3"></i></span><span style = "font-size:25px;" id="cart">0</span></span>
+        </div>
+
+        <div id="opencartid" class="opencart">
+          <div class = "heading">
+            My Cart <span id = 'disqty'>(<span id = "qty"></span> items)</span>
+            <div style = "margin-left:auto"><a href="javascript:void(0)" class="closebtn" style = "padding:0px;" onclick="closeNav()">&times;</a></div>
+          </div>
+          <div class = "billing" id = "billing">
+              <div class = "total">
+                <div class = "subtotal">
+                  <span>Subtotal</span>
+                  <span>₹<span id = "subtotal"></span></span>
+                </div>
+                <div class = "delivery">
+                  <span>Delivery Charges</span>
+                  <span>₹<span id = "delivery"></span></span>
+                </div>
+              </div>
+          </div>
+          <div class = "slider" id = "slider"> 
+            <div class = "cart-items">
+              <div id = "items">
+              </div>
+            </div>
+          </div>
+          <div style = 'width:100%;' id = 'checkoutbtn' class = 'checkout-button'>
+            <a href='/checkout'><button style = 'width:100%;' class='btn btn-primary' id ='checkout'><div style = "display:flex;justify-content: space-between;"><span style = "font-size:14px;color:#2a2a2b;">Proceed to Checkout</span><span>₹<span id = 'totalprice'></span></span></div></button></a>
+          </div>
+        </div>
+  </nav>
+
+
+
+
+
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %}
+
+  {% block body %} {% endblock %}
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>
+  $( function() {
+    $( "#search" ).autocomplete({
+      source: "{% url 'ShopHome' %}"
+    });
+  } );
+
+   function openNav() {
+        document.getElementById("opencartid").style.width = "300px";
+      }
+
+      function closeNav() {
+        document.getElementById("opencartid").style.width = "0";
+      } 
+
+  </script>
+
+    {% comment %} if (localStorage.getItem('cart') == null) {
+      var cart = {};
+    }
+    else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      updateCart(cart);
+    } {% endcomment %}
+
+    {% comment %} $('.cart').click(function() { {% endcomment %}
+    {% comment %} $('.divpr').on('click', 'button.cart', function () {
+      var idstr = this.id.toString();
+      if (cart[idstr] != undefined) {
+        qty = cart[idstr][0] + 1;
+      } else {
+        qty = 1;
+        name = document.getElementById('name' + idstr).innerHTML;
+        price = document.getElementById('price' + idstr).innerHTML;
+        img = document.getElementById('image' + idstr).innerHTML;
+        size = document.getElementById('size' + idstr).innerHTML;
+        category = document.getElementById('category' + idstr).innerHTML;
+        cart[idstr] = [qty, name, parseInt(price) , idstr.slice(2) , img , size , category];
+      }
+      updateCart(cart);   // Calling the function
+
+    }); {% endcomment %}
+
+
+    {% comment %} $('#popcart').popover(); {% endcomment %}
+    {% comment %} updatePopover(cart);
+    function updatePopover(cart) {
+      var popStr = "";
+      popStr = popStr+"<div class = 'mx-2 my-2'>";
+      
+      if(localStorage.getItem('cart') != "{}"){
+          var i=1;
+          for(var item in cart){
+            popStr = popStr+"<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+            popStr = popStr+"<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>"+cart[item][4]+"</div>";
+            popStr = popStr+"<div class = 'name' style = 'width:75%; text-align:left;'>"+"<span id = 'h"+i+"'>"+cart[item][1].slice(0, 19)+"</span>";
+            popStr = popStr+"<div class = 'size' style = 'font-size:12px;color:#5d6063;'>"+cart[item][5]+"</div>"
+            popStr = popStr+"<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty"+item+"'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus' onclick = 'MinusCart("+ cart[item][3] +")'>-</button> <span id='val" + item + "''>" + "<span id = 'cart-qty"+i+"'>"+cart[item][0]+"</span>" + "</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart("+ cart[item][3] +")'> + </button>"+"</div>"+"</div></div></div>";
+            i = i + 1;
+          }
+          popStr+="</div>";
+      }
+      else {
+        popStr+="<img class = 'emptycart' src = '{% static 'shop/emptycart.jpg' %}' alt = 'Your cart is empty'>"
+        popStr+="<div class = 'emptycarttext'><div style = 'color:#2a2a2b;font-size:16px;font-weight:bold;'>No items in your cart</div><div style = 'color:#5d5d5d;font-size:12px;'>Your favourite items are just a click away</div></div>";
+      }
+      
+      document.getElementById('items').innerHTML = popStr;
+    } {% endcomment %}
+
+    {% comment %} function clearCart() {
+      cart = JSON.parse(localStorage.getItem('cart'));
+      for (var item in cart) {
+        document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+      }
+      localStorage.clear();
+      cart = {};
+      updateCart(cart);
+    } {% endcomment %}
+
+    {% comment %} function updateCart(cart) {
+          var sum = 0;
+          var subtotal = 0;
+          for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2]*cart[item][0];
+            subtotal+=price
+            document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item][0] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+          }
+          localStorage.setItem('cart', JSON.stringify(cart));
+          document.getElementById('cart').innerHTML = sum;
+          document.getElementById('qty').innerHTML = sum;
+          document.getElementById('subtotal').innerHTML = subtotal;
+          var delivery_charges = 0;
+          if(subtotal<800 && subtotal>0){
+            delivery_charges = 49;
+          }
+          document.getElementById('delivery').innerHTML = delivery_charges;
+          document.getElementById('totalprice').innerHTML = subtotal+delivery_charges;
+          updatePopover(cart);
+    } {% endcomment %}
+
+
+    {% comment %} $('.divpr').on("click", "button.minus", function () {
+      a = this.id.slice(7,);
+      cart['pr' + a][0] = cart['pr' + a][0] - 1;
+      cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+
+      if (cart['pr' + a][0] == 0) {
+        document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+        delete (cart['pr' + a]);
+      }
+      else {
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+      }
+      updateCart(cart);
+    });
+    $('.divpr').on("click", "button.plus", function () {
+      a = this.id.slice(6,);
+      cart['pr' + a][0] = cart['pr' + a][0] + 1;
+      document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+      updateCart(cart);
+    }); {% endcomment %}
+
+
+
+    {% comment %} function PlusCart(a) {
+      cart['pr' + a][0] = cart['pr' + a][0] + 1;
+      document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+      updateCart(cart);
+    }
+
+    function MinusCart(a){
+      cart['pr' + a][0] = cart['pr' + a][0] - 1;
+      cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+
+      if (cart['pr' + a][0] == 0) {
+        document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+        delete (cart['pr' + a]) 
+      }
+      else {
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+      }
+      updateCart(cart);
+    } {% endcomment %}
+    
+
+    {% comment %} var h = JSON.parse(localStorage.getItem('cart'));
+    var l = Object.keys(h).length;
+    console.log(h);
+    j=1;
+    for(var t in h){
+      document.getElementById('h'+j).innerHTML = h[t][1].slice(0,19);
+      document.getElementById('cart-qty'+j).innerHTML = h[t][0];
+      console.log(h[t][1]);
+      j=j+1;
+    } {% endcomment %}
+
+      {% comment %} function openNav() {
+        document.getElementById("opencartid").style.width = "300px";
+      }
+
+      function closeNav() {
+        document.getElementById("opencartid").style.width = "0";
+      }  {% endcomment %}
+
+
+
+   
+  {% block js %} {% endblock %}
+
+  <footer class="bg-dark">
+    <div class="col-md-2">
+      <a class="nav-link" href="/about">About Us</a>
+      <a class="nav-link" href="/contact">Contact Us</a>
+    </div>
+  </footer>
+
+
+</body>
+
+</html>

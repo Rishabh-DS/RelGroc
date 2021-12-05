@@ -1,0 +1,342 @@
+{% extends 'shop/basic.html' %}
+
+{% block title%} {{product.product_name}} - My Awesome Cart{% endblock %}
+{% block css %}
+
+body{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #475d62;
+}
+
+
+.container{
+  margin-top:45px;
+  padding-left:100px;
+  padding-right:100px;
+}
+.vertical-line{
+    display: inline-block;
+    border-left: 1px solid #475d62;
+    margin: 0 10px;
+    height: 515px;
+  }
+
+.cart{
+  width:100px;
+  height:22px;
+  font-size:12px;
+  text-align:center;
+  padding:revert;
+  font-family:unset;
+}
+
+.plus{
+  width:25px;
+  height:22px;
+  font-size:12px;
+  text-align:center;
+  padding:revert;
+  font-family:unset;
+  margin-left:19px;
+}
+
+.minus{
+  width:25px;
+  height:22px;
+  font-size:12px;
+  text-align:center;
+  padding:revert;
+  font-family:unset;
+  margin-right:19px;
+}
+
+.prod-image{
+  height:200px;
+  width:300px;
+  border-radius:5px;
+}
+.slider-image {
+  width:100%;
+  height:100%;
+}
+
+.desc{
+  padding-left:50px;
+}
+
+.carousel-indicators .active {
+background-color: blue;
+}
+
+{% comment %} .carousel-control-prev-icon {
+background-color:blue;
+}
+.carousel-control-next-icon {
+background-color:blue;
+} {% endcomment %}
+
+@media (max-width: 800px){
+  .container{
+    margin-top: 45px;
+    padding-left: 25px;
+    padding-right: 10px;
+  }
+  .desc{
+    padding-left:0;
+  }
+}
+
+
+
+{% endblock %}
+{% block body %}
+<div class = "outer-container" style = "display:flex;">
+  <span class = "vertical-line"></span>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="row">
+          <div id="myslideshow" class='carousel' data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li class="active" data-target="#myslideshow" data-slide-to="0"></li>
+              <li data-target="#myslideshow" data-slide-to="1"></li>
+              <li data-target="#myslideshow" data-slide-to="2"></li>
+              <li data-target="#myslideshow" data-slide-to="3"></li>
+            </ol>
+            <div class="carousel-inner">
+              <div class="prod-image carousel-item active" id = "imagepr{{product.id}}">
+                <img src="/media/{{product.images.image1}}" class="d-block slider-image" style = "width:100%;">
+              </div>
+              <div class="prod-image carousel-item">
+                <img src="/media/{{product.images.image2}}" class="d-block slider-image">
+              </div>
+              <div class="prod-image carousel-item">
+                <img src="/media/{{product.images.image3}}" class="d-block slider-image">
+              </div>
+              <div class="prod-image carousel-item">
+                <img src="/media/{{product.images.image4}}" class="d-block slider-image">
+              </div>
+            </div>
+            <a href="#myslideshow" class="carousel-control-prev" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+              <span class=sr-only>Prevous</span>
+            </a>
+            <a href="#myslideshow" class="carousel-control-next" role="button" data-slide="next">
+              <span class="carousel-control-next-icon"></span>
+              <span class=sr-only>Next</span>
+            </a>
+          </div>
+        </div>
+        <div class="my-5">
+          <span id="divpr{{product.id}}" class="divpr">
+            <button id="pr{{product.id}}" class="btn btn-primary cart mx-2">ADD</button>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-8 desc">
+        {% if product.discount %}
+          <span class="badge rounded-pill bg-success">{{product.discount}}% OFF</span>
+        {% endif %}
+        <h5 id="namepr{{product.id}}">{{product.product_name}}</h5>
+        <h5 id="categorypr{{product.id}}" style = "display:none;">{{product.category}}</h5>
+        <p id="sizepr{{product.id}}">{{product.no_of_items_in_a_pack}} x {{product.size}}</p>
+        {% if product.discount %}
+          <p>₹<span id = "maxpricepr{{product.id}}"><del>{{product.max_retail_price}}</del></span>  <b>₹<span id = "pricepr{{product.id}}">{{product.price}}</span></b></p>
+        {% else %}
+          <p><b>₹<span id = "pricepr{{product.id}}">{{product.max_retail_price}}</span></b></p>
+        {% endif %}
+        <p>{{product.desc}}</p>
+        <div class = "stock d-none" id = "stockpr{{product.id}}">{{product.in_stock}}</div>
+        <pre>{{product.specifications}}</pre>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+{% block js %}
+<script>
+var f = "pr"+"{{id|escapejs}}";
+  if (localStorage.getItem('cart') == null) {
+    var cart = {};
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    {% comment %} id = "pr"+"{{id|escapejs}}"; {% endcomment %}
+    {% comment %} updateCart(cart , id); {% endcomment %}
+  }
+    $('.divpr').on('click', 'button.cart', function(){
+    var idstr = this.id.toString();
+    var stock = document.getElementById('stock'+idstr).innerHTML;
+    if(stock==0){
+      alert("Item is out of stock");
+    }
+    else{
+      if (cart[idstr] != undefined) {
+          qty = cart[idstr][0] + 1;
+      } else {
+          qty = 1;
+          name = document.getElementById('name'+idstr).innerHTML;
+          price = document.getElementById('price'+idstr).innerHTML;
+          img = document.getElementById('image'+f).innerHTML;
+          size = document.getElementById('size'+f).innerHTML;
+          category = document.getElementById('category'+f).innerHTML;
+          cart[idstr] = [qty , name , parseInt(price) , idstr.slice(2) , img,size , category , stock];
+      }
+      updateCart(cart , idstr);   // Calling the function
+    }
+});
+  {% comment %} $('#popcart').popover(); {% endcomment %}
+  updatePopover(cart);
+{% comment %} function updatePopover(cart) {
+    var popStr = "";
+    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+    var i = 1;
+    for (var item in cart) {
+        popStr = popStr + "<b>" + i + "</b>. ";
+        popStr = popStr + cart[item][1].slice(0, 19) + "... Qty: " + cart[item][0] + '<br>';
+        i = i + 1;
+    }
+    popStr = popStr + "</div> <a href='/checkout'><button class='btn btn-primary' id ='checkout'>Checkout</button>     "
+    document.getElementById('popcart').setAttribute('data-content', popStr);
+    $('#popcart').popover('hide');
+} {% endcomment %}
+
+
+function updatePopover(cart) {
+      var popStr = "";
+      popStr = popStr+"<div class = 'mx-2 my-2'>";
+      var i=1;
+      for(var item in cart){
+        
+        popStr = popStr+"<div class = 'item' style = 'display:inline-block;width:100%;justify-content: space-between;'>";
+        popStr = popStr+"<div class = 'image-name' style = 'display:flex;'><div class = 'image' style = 'border-radius:0px;width:25%;'>"+cart[item][4]+"</div>";
+        popStr = popStr+"<div class = 'name' style = 'width:75%; text-align:left;'>"+"<span id = 'h"+i+"'>"+cart[item][1].slice(0, 19)+"</span>";
+        popStr = popStr+"<div class = 'size' style = 'font-size:12px;color:#5d6063;'>"+cart[item][5]+"</div>"
+        popStr = popStr+"<div style = 'text-align:left;' class = 'cart-qty' id = 'cart-qty"+item+"'><button id='cart-minus" + item + "' class='btn btn-primary btn-xs cart-minus'  onclick = 'MinusCart("+ cart[item][3] +")'>-</button> <span id='val" + item + "'>" + cart[item][0]+"</span> <button id='cart-plus" + item + "' class='btn btn-primary btn-xs cart-plus' onclick = 'PlusCart("+ cart[item][3] +")'> + </button>"+"</div>"+"</div></div></div>";
+        i = i + 1;
+      }
+      popStr = popStr+"</div>";
+      document.getElementById('items').innerHTML = popStr;
+      
+    }
+  updateCart(cart,f);
+  
+  {% comment %} 
+  function updateCart(cart , id) {
+    var sum=0;
+    for(item in cart){
+      sum=sum+cart[item][0];
+    }
+    if (cart[id] != undefined) {
+      document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus mx-2'>-</button> <span id='val" + id + "''>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus mx-2'> + </button>";
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart').innerHTML = sum;
+    updatePopover(cart);
+} {% endcomment %}
+
+      function updateCart(cart , id) {
+          var sum = 0;
+          var subtotal = 0;
+          for (var item in cart) {
+            sum = sum + cart[item][0];
+            var price = cart[item][2]*cart[item][0];
+            subtotal+=price
+          }
+          if(cart[id]!=undefined){
+            document.getElementById('div' + id).innerHTML = "<button id='minus" + id + "' class='btn btn-primary minus'>-</button> <span id='val" + id + "'>" + cart[id][0] + "</span> <button id='plus" + id + "' class='btn btn-primary plus'> + </button>";
+          }
+          localStorage.setItem('cart', JSON.stringify(cart));
+          document.getElementById('cart').innerHTML = sum;
+          document.getElementById('qty').innerHTML = sum;
+          document.getElementById('subtotal').innerHTML = subtotal;
+          var delivery_charges = 0;
+          if(subtotal<800 && subtotal>0){
+            delivery_charges = 49;
+          }
+          document.getElementById('delivery').innerHTML = delivery_charges;
+          document.getElementById('totalprice').innerHTML = subtotal+delivery_charges;
+          updatePopover(cart);
+    }
+
+$('.divpr').on("click", "button.minus", function() {
+    a = this.id.slice(7, );
+    b = this.id.slice(5,)
+    cart['pr' + a][0] = cart['pr' + a][0] - 1;
+    cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+    if(cart['pr'+a][0]==0){
+      document.getElementById('divpr'+a).innerHTML = '<button id="pr'+a+ '" class="btn btn-primary cart mx-2">ADD</button>'
+      delete(cart['pr'+a])
+    }
+    else{
+      document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+    }
+    updateCart(cart , b);
+});
+$('.divpr').on("click", "button.plus", function() {
+    a = this.id.slice(6, );
+    b = this.id.slice(4, );
+    var stock = cart['pr'+a][7];
+    if(cart['pr'+a][0]>=stock){
+      alert("No more items in the stock");
+    }
+    else{
+      cart['pr' + a][0] = cart['pr' + a][0] + 1;
+      document.getElementById('val' + b).innerHTML = cart['pr' + a][0];
+      updateCart(cart , b);
+    }
+});
+
+  function PlusCart(a) {
+      var stock = cart['pr'+a][7];
+      if(cart['pr'+a][0]>=stock){
+        alert("No more items in the stock");
+      }
+      else{
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        var cartbtn = document.getElementById('divpr'+a);
+        if(cartbtn!=null){
+          updateCart(cart,f);
+        }
+        else {
+          updateCart(cart);
+        }
+      }
+    }
+
+    function MinusCart(a){
+      cart['pr' + a][0] = cart['pr' + a][0] - 1;
+      cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+      var cartbtn = document.getElementById('divpr'+a);
+      if (cart['pr' + a][0] == 0) {
+        if(cartbtn!=null){
+          document.getElementById('divpr' + a).innerHTML = '<button id="pr' + a + '" class="btn btn-primary cart">ADD</button>'
+        }
+        delete (cart['pr' + a]) 
+      }
+      else {
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+      }
+      if(cartbtn!=null){
+        updateCart(cart,f);
+      }
+      else {
+        updateCart(cart);
+      }
+      
+    }
+
+</script>
+{% endblock %}
