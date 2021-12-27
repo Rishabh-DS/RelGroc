@@ -230,7 +230,7 @@ def checkout(request):
                 'INDUSTRY_TYPE_ID':'Retail',
                 'WEBSITE':'WEBSTAGING',
                 'CHANNEL_ID':'WEB',
-            'CALLBACK_URL':'http://34.71.201.87/handlerequest/',
+            'CALLBACK_URL':'http://104.154.139.47/handlerequest/',
             }
             param_dict['CHECKSUMHASH'] = checksum.generate_checksum(param_dict , MERCHANT_KEY)
             return render(request , 'shop/paytm.html' , {'param_dict':param_dict , 'thank':thank})

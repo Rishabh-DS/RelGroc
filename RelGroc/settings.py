@@ -25,7 +25,7 @@ SECRET_KEY = '#ik3*3ea_-81=en00-_(157*1jj78s*j9w062@b6$pcv10@*yt'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','34.71.201.87']
+ALLOWED_HOSTS = ['127.0.0.1','104.154.139.47']
 
 
 # Application definition
@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'relgroc-main',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-                'host': 'mongodb://34.64.220.95:27017'
+                'host': 'mongodb://34.64.245.130:27017'
             }
     }
 }
