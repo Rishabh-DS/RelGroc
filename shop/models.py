@@ -11,8 +11,8 @@ class Image(models.Model):
     name = models.CharField(max_length=100)
     image1 = models.ImageField(upload_to='shop/images' , default = "")
     image2 = models.ImageField(upload_to='shop/images' , default = "")
-    image3 = models.ImageField(upload_to='shop/images' , default = "")
-    image4 = models.ImageField(upload_to='shop/images' , default = "") 
+    image3 = models.ImageField(upload_to='shop/images' , default = "" , blank=True)
+    image4 = models.ImageField(upload_to='shop/images' , default = "" , blank=True) 
 
     def __str__(self):
         return self.name
