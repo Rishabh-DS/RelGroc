@@ -25,7 +25,7 @@ SECRET_KEY = '#ik3*3ea_-81=en00-_(157*1jj78s*j9w062@b6$pcv10@*yt'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','104.154.139.47']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -74,23 +74,23 @@ WSGI_APPLICATION = 'RelGroc.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'relgroc-main',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-                'host': 'mongodb://34.64.245.130:27017'
-            }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'relgroc-main',
+#         'ENFORCE_SCHEMA': False,
+#         'CLIENT': {
+#                 'host': 'mongodb://34.64.245.130:27017'
+#             }
+#     }
+# }
 
 
 # Password validation
