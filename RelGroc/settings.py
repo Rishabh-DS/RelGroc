@@ -74,23 +74,23 @@ WSGI_APPLICATION = 'RelGroc.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'relgroc-main',
-#         'ENFORCE_SCHEMA': False,
-#         'CLIENT': {
-#                 'host': 'mongodb://34.64.245.130:27017'
-#             }
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'relgroc-main',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+                'host': "mongodb+srv://RelGroc:ShivRelGrocIR3011%40%21@cluster0.cy57n.mongodb.net/RelGroc-main?retryWrites=true&w=majority"
+            }
+    }
+}
 
 
 # Password validation
