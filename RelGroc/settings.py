@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'RelGroc.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'relgroc-main',
+        'NAME': 'RelGroc-main',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-                'host': 'mongodb+srv://RelGroc:ShivRelGrocIR3011%40%21@cluster0.cy57n.mongodb.net/test'
+                'host': 'mongodb+srv://RelGroc:ShivRelGrocIR3011%40%21@cluster0.cy57n.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
             }
     }
 }
