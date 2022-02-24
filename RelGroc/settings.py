@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'relgroc-main',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-                'host': "mongodb+srv://RelGroc:ShivRelGrocIR3011%40%21@cluster0.cy57n.mongodb.net/RelGroc-main?retryWrites=true&w=majority"
+                'host': 'mongodb+srv://RelGroc:ShivRelGrocIR3011%40%21@cluster0.cy57n.mongodb.net/test'
             }
     }
 }
